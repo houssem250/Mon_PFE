@@ -1,0 +1,22 @@
+% ============================================================
+% TABLE: Summary of strengths and limitations of reviewed works
+% ============================================================
+% Usage: \input{tables/table_strengths_limitations}
+% ============================================================
+
+\begin{tabular}{|L{4cm}|L{4cm}|L{4cm}|}
+	\hline
+	\rowcolor{primary}
+	\textbf{\color{white}Dimension} & \textbf{\color{white}Strengths} & \textbf{\color{white}Limitations} \\
+	\hline
+	Visualisation & Live 3D DT achievable [W1, W4] & Separated from ML prediction \\
+	\hline
+	ML Detection & LSTM 97.17\% accuracy [W6] & Offline only, no real-time deployment \\
+	\hline
+	Sensors & Multi-modal fusion outperforms single-modality [W8] & Most works use single sensor \\
+	\hline
+	Cost & Low-cost IoT feasible (<€50) [W3, W7, W9] & Often lacks ML or visualisation \\
+	\hline
+	Deployment & Edge deployment possible [W3, W7] & No web-native, installation-free UI \\
+	\hline
+\end{tabular}

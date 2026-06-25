@@ -1,0 +1,50 @@
+% ============================================================
+% TABLE: Database schema for sensor_data.db
+% ============================================================
+\scriptsize
+\rowcolors{2}{white}{primary!10}
+\begin{xltabular}{\linewidth}{| L{3.5cm} | L{3.0cm} | X |}
+\caption{Database schema for \texttt{sensor\_data.db}}
+\label{tab:sensor_data_schema} \\
+\hline
+\rowcolor{primary}
+\textbf{\color{white}Column} & \textbf{\color{white}Type} & \textbf{\color{white}Description / Purpose} \\
+\hline
+\endfirsthead
+
+\caption[]{Database schema for \texttt{sensor\_data.db} (\textit{continued})} \\
+\hline
+\rowcolor{primary}
+\textbf{\color{white}Column} & \textbf{\color{white}Type} & \textbf{\color{white}Description / Purpose} \\
+\hline
+\endhead
+
+\hline
+\multicolumn{3}{r}{\textit{Continued on next page\ldots}} \\
+\endfoot
+
+\hline
+\endlastfoot
+
+timestamp\_utc & TEXT & ISO 8601 with milliseconds; primary join key for merge\_asof alignment with printer\_data.db \\
+\hline
+elapsed\_ms & INTEGER & Milliseconds since sensor node boot; used to detect sensor restarts \\
+\hline
+temp\_c & REAL & Converted Celsius temperature from KY-013 NTC thermistor via Steinhart-Hart equation \\
+\hline
+delta\_temp\_c & REAL & Temperature change since last sample; rate-of-rise detection (heat creep early warning) \\
+\hline
+acc\_x / acc\_y / acc\_z & INTEGER & Raw ADC counts from MPU-6050 accelerometer; 3-axis vibration data \\
+\hline
+delta\_acc\_x / delta\_acc\_y / delta\_acc\_z & INTEGER & Sample-to-sample acceleration delta; used in kurtosis and crest factor computation \\
+\hline
+gyro\_x / gyro\_y / gyro\_z & INTEGER & Raw ADC counts from MPU-6050 gyroscope; rotational dynamics (belt resonance, axis jerk) \\
+\hline
+delta\_gyro\_x / delta\_gyro\_y / delta\_gyro\_z & INTEGER & Gyroscope rate-of-change; complementary to acceleration for motion fault detection \\
+\hline
+source & TEXT & Sensor node identifier; traceability for multi-node deployments \\
+\hline
+extrusion & FLOAT & Extrusion speed (mm/s), used to describe the flow state of the filament relative to the configured feed rate \\
+\hline
+
+\end{xltabular}

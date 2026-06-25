@@ -1,0 +1,106 @@
+\chapter{System Analysis and Data Acquisition}
+\label{chap:chapter2}
+
+\section{Functional Analysis of the 3D Printer}
+
+The BCN3D+ is a Cartesian fused deposition modeling (FDM) 3D printer with dual independent extruders. It runs Marlin 1.x firmware and is managed through OctoPrint \cite{octoprint2024api}. For the purpose of fault detection, the system can be divided into five key subsystems \cite{blanchard2011systems}.
+
+The extruder assembly is the most failure-prone part of the printer. It includes the hotend (nozzle, heater block, and thermistor), the cold end (heatsink, heat break, and cooling fan), and the extruder drive system (stepper motor and drive gear). The main observable signals from this subsystem include nozzle temperature (actual versus target), heatsink temperature measured using a KY-013 sensor, vibration of the assembly captured by an MPU-6050 sensor, and extrusion state information obtained from OctoPrint. Filament movement is calculated via the simple mouse encoder.
+
+The motion system follows a Cartesian X-Y-Z architecture. The X-axis moves the print head using a GT2 belt, the Y-axis moves the build platform, and the Z-axis is controlled by two lead screws. Observable signals include axis positions (X, Y, Z, and extrusion axis in millimeters), commanded feedrate, and tri-axis vibration measurements from an MPU-6050 mounted on the X-carriage \cite{mpu6050_datasheet}.
+
+The heated bed subsystem is responsible for maintaining adhesion during the first layer of printing. Its main monitored signals are the actual and target bed temperatures.
+
+The electronics and control board consist of a RAMPS 1.4 board with an ATmega2560 microcontroller running Marlin firmware \cite{marlin2024thermal}. Relevant observable signals include firmware-level events and communication reliability indicators such as resend counts.
+
+The cooling system includes two fans: one for part cooling and one for heatsink cooling. Failure of the heatsink fan is particularly critical because it can lead to heat creep. This is monitored indirectly through the rate of increase in heatsink temperature over time.
+
+OctoPrint serves as a non-invasive bridge between the printer firmware and external systems, exposing telemetry data through an MQTT interface \cite{mqtt5_spec}. Data collected from the system is stored using Python-based collectors in two SQLite databases: \texttt{printer\_data.db}, which contains firmware telemetry, and \texttt{sensor\_data.db}, which stores external sensor measurements \cite{sqlite2024}.
+
+Table~\ref{tab:printer_data_schema} presents the database schema for \texttt{printer\_data.db}. The table is organised by logical groups: \texttt{temperatures} (nozzle actual/target, bed, chamber), \texttt{motion} (axis positions, extruder position, feedrate), \texttt{print\_job} (filename, state, progress, filament used), \texttt{printer\_state} (printing/paused/error flags), \texttt{events} (firmware events for ground truth), and \texttt{resends} (communication reliability indicators).
+
+\begin{table}[H]
+\centering
+%\caption{Database schema for \texttt{printer\_data.db}}
+\input{tables/table_printer_data_schema}
+\label{tab:printer_data_schema}
+\end{table}
+
+\section{Failure Mode and Effects Analysis (FMEA)}
+
+Failure Mode and Effects Analysis (FMEA) is used to systematically identify potential failure modes, their causes and effects, and to prioritize them using the Risk Priority Number (RPN), defined as Severity × Occurrence × Detection. This method is widely used in reliability engineering to guide maintenance and monitoring strategies \cite{liu2013risk, iec60812}.
+
+Table~\ref{tab:fmea} presents the FMEA worksheet for the BCN3D+ printer. Six failure modes are identified as highest priority: nozzle clogging (RPN 392), overheating (RPN 180), misalignment/layer shifting (RPN 210), bearing wear (RPN 210), step loss (RPN 210), and belt breakage (RPN 168). For each failure mode, the table lists the affected subsystem, failure cause, observable effect, and the Severity, Occurrence, and Detection scores used to compute the RPN.
+
+\begin{table}[H]
+\centering
+%\caption{FMEA worksheet for BCN3D+ FDM printer}
+\input{tables/table_fmea}
+\label{tab:fmea}
+\end{table}
+
+Nozzle clogging is the highest priority failure mode (RPN 392) and can be detected through vibration anomalies captured by the MPU-6050, low filament flow using our filament encoder and abnormal temperature increases at the heatsink measured by the KY-013 sensor. Overheating (RPN 180) and layer shifting (RPN 210) are also high-priority issues. Bearing wear and step loss (both RPN 210) can be identified through long-term trends in vibration RMS values and increases in communication resend counts \cite{randall2011vibration}. Belt breakage (RPN 168) is typically not detected at the exact moment of failure but instead through early degradation patterns such as vibration changes and motion inconsistencies.
+
+\section{Sensor Selection}
+
+Sensor selection is guided by three main criteria: the ability to observe relevant failure modes, feasibility of installation without modifying the printer firmware, and a strict hardware cost limit of under 50 euros \cite{shomenov2025}.
+
+Table~\ref{tab:sensor_selection} summarises the sensors selected for the prototype. For each sensor, the table reports the measured parameter, target failure modes, physical placement on the printer, sampling rate, and implementation details. The selected sensors include the KY-013 NTC thermistor (heatsink temperature), MPU-6050 IMU (3-axis acceleration and gyroscope), OctoPrint MQTT telemetry (position, feedrate, temperatures), and an optical mouse-based filament encoder.
+
+{% 
+    \centering
+    \input{tables/table_sensor_selection}
+    \label{tab:sensor_selection}
+}
+
+The KY-013 NTC thermistor measures heatsink temperature at 2 Hz using Steinhart-Hart conversion \cite{steinhart1968calibration}. It provides an accuracy of approximately ±1.6°C and enables early detection of heat creep through the rate of temperature increase.
+
+The MPU-6050 MEMS inertial measurement unit provides six-axis acceleration and gyroscope data. It is mounted on the X-carriage and sampled at 50 Hz. Sensitivity has been validated in the 18--116 Hz range \cite{kiran2022sensitivity}. From this sensor, features such as RMS, kurtosis, crest factor, and FFT-based spectral energy are extracted for anomaly detection \cite{randall2011vibration}.
+
+Additional sensors such as current sensing (ACS712) and vision-based monitoring are excluded from the current implementation due to budget constraints and non-invasive design requirements \cite{obico2024}. These are reserved for future system extensions.
+
+The filament mouse encoder measures filament flow from the spool to the extruder at 1-5 Hz, enables early clog detection by comparing set and calculated feedrate speeds in a time window.
+
+\section{Data Acquisition and Communication}
+
+The system architecture follows an edge computing approach, where all processing is performed locally on a Raspberry Pi gateway \cite{shi2016edge}.
+
+An ESP8266 microcontroller is used to sample the MPU-6050 at 50 Hz and the KY-013 at 2 Hz \cite{esp8266_trm}. It computes basic signal deltas and publishes structured JSON messages via MQTT. Telemetry data is transmitted using QoS 0, while critical alerts use QoS 1 \cite{mqtt5_spec}.
+
+A Mosquitto MQTT broker runs on the Raspberry Pi and manages communication topics including \texttt{printer/sensors}, \texttt{printer/octoprint/\#}, and \texttt{printer/alerts/\#}.
+
+The OctoPrint REST API is used both to retrieve the initial printer state and to send control commands such as pausing a print job when critical anomalies are detected \cite{octoprint2024api}.
+
+Figure~\ref{fig:dfd} presents the Data Flow Diagram (DFD) of the acquisition pipeline. The diagram shows the flow of data from the physical printer and external sensors through the ESP8266 node and OctoPrint, into the MQTT broker, then to the Python collectors, SQLite databases, data aligner, feature engineering module, and finally to the PMx AI pipeline and dashboard.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\textwidth]{figures/diagram_data_flow}
+    %\caption{Data Flow Diagram (DFD) of the acquisition pipeline}
+    \label{fig:dfd}
+\end{figure}
+
+As illustrated in the accompanying system architecture diagram, this acquisition process is part of a broader, five-tier pipeline:
+
+\begin{itemize}
+    \item \textbf{Physical \& Acquisition Layers:} Raw data from the BCN3D+ printer and external sensors flows into the ESP8266 node and OctoPrint, which then publish to the centralized Mosquitto MQTT broker.
+    
+    \item \textbf{Data Processing \& Storage Layers:} Subscribed data is written to local SQLite databases (\texttt{printer\_data.db} and \texttt{sensor\_data.db}). This telemetry is subsequently loaded, aligned (with latency compensation), and passed through feature engineering before entering the PMx AI Pipeline.
+    
+    \item \textbf{Supervision Layer:} The AI pipeline outputs fault classes and severity scores, forwarding states and alerts via a WebSocket bridge to a React/Three.js Web Dashboard. Simultaneously, the Alert Generator closes the loop by pushing critical pause/stop commands back to OctoPrint via its REST API.
+\end{itemize}
+
+The system relies on these two SQLite databases to handle the incoming telemetry. Table~\ref{tab:sensor_data_schema} describes the columns of \texttt{sensor\_data.db}, which stores external sensor readings. The table includes timestamp information (UTC and elapsed milliseconds), temperature readings (raw and delta), tri-axis accelerometer and gyroscope data (raw and delta), source identifier, and extrusion speed.
+
+{%
+    \centering
+    \input{tables/table_sensor_data_schema}
+    \label{tab:sensor_data_schema}
+}
+
+
+Time alignment between datasets is handled using Pandas \texttt{merge\_asof} with a 200 millisecond latency compensation and a ±500 millisecond tolerance window \cite{mckinney2010data}. A dedicated data alignment module shifts sensor timestamps backward by 200 milliseconds to compensate for MQTT transmission delay and then performs nearest-neighbor matching with OctoPrint telemetry.
+
+The resulting synchronized dataset is used for feature engineering in the next chapter. Overall, this acquisition pipeline enables real-time, low-cost monitoring of the FDM printer without requiring any modification to the firmware, directly supporting the digital twin objectives introduced earlier.
+
+\endinput

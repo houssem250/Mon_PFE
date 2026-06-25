@@ -1,0 +1,54 @@
+% ============================================================
+% TABLE: Feature Engineering Groups
+% ============================================================
+{
+\scriptsize
+\rowcolors{2}{white}{primary!10}
+
+\begin{tabular}{|L{2.5cm}|L{3.5cm}|L{5.0cm}|L{4.5cm}|}
+	\hline
+	\rowcolor{primary}
+	\textbf{\color{white}Group} &
+	\textbf{\color{white}Source} &
+	\textbf{\color{white}Extracted Features} &
+	\textbf{\color{white}Fault Mode Targeted} \\
+	\hline
+
+	A &
+	KY-013 (thermal) &
+	Nozzle temperature error (actual vs target), error moving variance, heatsink linear slope ($dT/dt$), ambient delta &
+	Overheating, heat creep, nozzle clogging (thermal signature) \\
+	\hline
+
+	B &
+	MPU-6050 (vibration) &
+	Accelerometer magnitude ($\|\mathbf{a}\|=\sqrt{a_x^2+a_y^2+a_z^2}$), rolling RMS, kurtosis (impulsiveness), crest factor (peak/RMS) &
+	Nozzle clogging (vibration spike), bearing wear (RMS trend), belt resonance \\
+	\hline
+
+	C &
+	MPU-6050 (spectral) &
+	Dominant frequency (Hz), spectral entropy, band power 2--5 Hz, band power 10--20 Hz &
+	Belt resonance, bearing wear (broadband noise), step loss (harmonic shift) \\
+	\hline
+
+	D &
+	OctoPrint motion telemetry &
+	Extrusion/retraction state flag (from $e_{mm}$ delta), time\_since\_retraction, feedrate\_mmmin &
+	Context gating; suppresses false alerts during travel moves and retractions \\
+	\hline
+
+	E &
+	Filament encoder (mechanical) &
+	Actual filament flow (mm/s), flow speed delta between consecutive measurements &
+	Nozzle clogging, filament slippage, filament runout \\
+	\hline
+
+	F &
+	Cross-source fused &
+	vibration\_per\_feedrate (anomalous vibration at commanded speed), nozzle\_err $\times$ is\_extrusion (thermal drop during active extrusion) &
+	Step loss/belt slippage, flow-specific thermal anomalies \\
+	\hline
+
+\end{tabular}
+}

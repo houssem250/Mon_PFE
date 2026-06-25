@@ -1,0 +1,19 @@
+\small
+\begin{tabular}{|L{6.5cm}|C{2.5cm}|C{2.5cm}|C{2.5cm}|}
+	\hline
+	\rowcolor{primary}
+	\textbf{\color{white}Classifier Architecture} & \textbf{\color{white}Accuracy} & \textbf{\color{white}Weighted F1} & \textbf{\color{white}Macro F1} \\
+	\hline
+	XGBoost (Global Baseline) & 85.84\% & 0.8573 & 0.4450 \\
+	\hline
+	MLP Neural Net (Global Baseline) & 80.58\% & 0.7769 & 0.4234 \\
+	\hline
+	Random Forest (Global Baseline) & 80.37\% & 0.7907 & 0.5064 \\
+	\hline
+	\rowcolor{gray!15}
+	\textbf{Physics-Aware Binary Ensemble (Proposed)} & \textbf{79.77\%} & \textbf{0.8004} & \textbf{0.4524} \\
+	\hline
+	\multicolumn{4}{|l|}{\textit{Note: XGBoost achieves higher accuracy by overfitting to the ``normal'' class (69.2\% of test set).}} \\
+	\multicolumn{4}{|l|}{\textit{The Binary Ensemble gives better minority-class recall and full explainability.}} \\
+	\hline
+\end{tabular}

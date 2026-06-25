@@ -1,0 +1,15 @@
+\small
+\begin{tabular}{|L{3.2cm}|C{2.2cm}|C{2.2cm}|C{2.2cm}|L{3.5cm}|}
+	\hline
+	\rowcolor{primary}
+	\textbf{\color{white}Fault Class} & \textbf{\color{white}Precision} & \textbf{\color{white}Recall} & \textbf{\color{white}F1-Score} & \textbf{\color{white}Dominant Feature} \\
+	\hline
+	Bad Print (\texttt{bad\_print}) & 0.6398 & 0.6976 & 0.6675 & \texttt{e\_ratio}: 24.25\% \\
+	\hline
+	Loose Belt (\texttt{loose\_belt}) & N/A* & N/A* & N/A* & \texttt{acc\_y\_roll\_std}: 25.58\% \\
+	\hline
+	\multicolumn{5}{|l|}{\textit{*Zero test support: catastrophic belt failure terminates the print before the 20\% test window.}} \\
+	\hline
+	\multicolumn{5}{|l|}{\textit{Global model baseline recall for \texttt{bad\_print}: 53.0\% $\rightarrow$ improved to 69.76\% with binary detector.}} \\
+	\hline
+\end{tabular}

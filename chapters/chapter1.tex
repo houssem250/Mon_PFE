@@ -1,0 +1,78 @@
+\chapter{State of the Art and Research Positioning}
+\label{chap:stateoftheart}
+
+\section{Industry 4.0 and 3D Printing}
+
+Industry 4.0 is about connecting everything in a factory. Machines talk to each other, production adapts on the fly, and decisions come from real data instead of gut feelings \cite{lasi2014industry,lu2017industry}. Additive manufacturing builds objects layer by layer from a digital file. This method is great for complex shapes and custom parts \cite{gibson2021additive}. Among all the 3D printing technologies, FDM is the most common because it is cheap and has a huge open source community.
+
+But here is the problem: FDM printers are heavily prone to failures. A lot. Studies show failure rates over 20\% in real world use, with material waste hitting 34\% \cite{song2016material}. Common failures include clogged nozzles, layers that do not line up, weird vibrations, and plastic melting where it should not. All of this means unexpected stops, wasted filament, and low productivity. That is exactly why FDM is a perfect candidate for predictive maintenance and digital twin solutions.
+
+\section{FDM 3D Printing}
+
+FDM works by melting plastic filament and pushing it through a heated nozzle. The nozzle moves around in three directions (X, Y, Z), putting down one layer at a time. The printer follows G-code instructions that come from a sliced 3D model \cite{daminabo2020fdm,turner2014review}.
+
+FDM is relatively cheap to buy and operate, making it accessible to hobbyists, educational settings, and industrial prototyping alike. It also supports a wide range of materials, including PLA, ABS, PETG, flexible TPU, nylon, and carbon-fiber-reinforced composites, which gives it strong versatility across different applications \cite{ali2024state}. In addition, FDM printers are generally easy to use, maintain, and repair, especially within a large open-source ecosystem built around tools like Marlin, Klipper, and OctoPrint.
+
+However, the technology also has important limitations. Printed parts often show visible layer lines, resulting in a relatively rough surface finish compared to other additive manufacturing methods. Mechanical properties are anisotropic, meaning parts are stronger in some directions than others, which can limit functional performance. More critically, FDM is prone to frequent operational failures such as nozzle clogging, filament grinding, layer separation, warping at corners, heat creep issues, and occasional axis misalignment \cite{daminabo2020fdm,turner2014review}.
+
+Because of this combination of openness, documentation, and relatively high failure rate, FDM is an ideal candidate for retrofitting with low-cost monitoring and predictive maintenance systems. In contrast, other additive manufacturing technologies such as resin-based SLA or powder-based SLS systems are typically more expensive, less accessible, and exhibit different failure modes, making them less suitable for the focus of this work.
+
+\section{Industrial Maintenance Strategies}
+
+Factories manage maintenance in three main ways, each with different trade-offs in cost, efficiency, and reliability \cite{thomas2021maintenance,jardine2006review}.
+
+The simplest approach is corrective maintenance, where machines are only repaired after they break down; while straightforward, this method often leads to unexpected downtime and wasted materials.
+
+A more structured alternative is preventive maintenance, in which servicing is performed at fixed intervals based on operating hours or calendar time. Although this can reduce the likelihood of sudden failures, it is not always efficient, as maintenance may be carried out too early or too late relative to the actual condition of the machine.
+
+The most advanced approach is predictive maintenance (PdM), which relies on continuous monitoring of machines using sensors and data analytics to determine their real-time condition and intervene only when early signs of degradation are detected. PdM generally follows a three-stage process: first, data is collected from sources such as vibration, temperature, and electrical current; second, the data is processed to remove noise and extract meaningful features; and third, decision-making algorithms are applied to detect anomalies or predict impending failures \cite{jardine2006review}.
+
+In industrial settings, PdM has been shown to reduce downtime by around 30–50\% and maintenance costs by approximately 25–30\% \cite{thomas2021maintenance}. For FDM 3D printing systems in particular, PdM is especially valuable because failures occur relatively frequently and often produce detectable sensor patterns that can be analyzed for early warning signals \cite{song2016material}.
+
+\section{Digital Twin Concept}
+
+A digital twin is a virtual representation of a physical machine that remains synchronized with it through real-time data streams. Unlike a static 3D model, a digital twin is dynamic and capable of monitoring current conditions, simulating behavior, and supporting predictive analysis \cite{rasheed2020digital}.
+
+\subsection{Three Levels of Maturity}
+
+Kritzinger et al. \cite{kritzinger2018digital} define three levels of digital twin maturity based on data flow automation:
+
+\begin{itemize}
+    \item Digital model: manual data transfer between physical and virtual systems. No automatic connection exists.
+    \item Digital shadow: one-way automatic data flow from the physical system to the virtual model. The system can visualize real-time state, but cannot send feedback or control commands back.
+    \item Digital twin: fully bidirectional communication where the virtual model continuously updates from the physical system and can also influence it through decisions, alerts, or control actions.
+\end{itemize}
+
+\subsection{Digital Twin for FDM}
+
+A digital twin in FDM systems enables faults to be visualized directly on a 3D representation of the printer or printed object, providing geometric and contextual understanding of failures. It also allows continuous tracking of machine health and degradation trends over time. In addition, it supports the combination of physics-based modeling with data-driven machine learning approaches, improving both interpretability and predictive performance. Finally, it allows a hybrid operational strategy where rule-based detection can be used from the start, while more advanced learning-based methods improve performance progressively as more data becomes available.
+
+\section{Comparative Study of Existing Works}
+
+Several representative research works from 2022--2025 focusing on digital twins and fault detection in FDM and small-scale machines were analyzed alongside the proposed system. The comparison highlights key differences in sensing, modeling, and deployment strategies.
+
+Table~\ref{tab:comparative_study} summarises nine reviewed works: Pantelidakis et al.~\cite{pantelidakis2022digital} (W1), Isiani et al.~\cite{isiani2023fault} (W2), Shomenov et al.~\cite{shomenov2025} (W3), Jyeniskhan et al.~\cite{jyeniskhan2023digital} (W4), Kim et al.~\cite{kim2022data} (W5), Mishra et al.~\cite{mishra2023development} (W6), Kolok et al.~\cite{kolok2025lowcost} (W7), Sampedro et al.~\cite{sampedro2022design} (W8), Kumar et al.~\cite{kumar2022lowcost} (W9), plus the present project (W10). The table compares each work across eight dimensions: year, application field, sensors used, prediction model, software tools, real-time synchronisation capability, key result, and main limitation.
+
+{%
+    \centering
+    \label{tab:comparative_study}
+    \input{tables/table_comparative_study}
+}
+
+The analysis reveals several key observations. Most existing studies rely on a single sensor modality, typically vibration or camera data, which limits the richness of failure detection. Deep learning approaches such as LSTM and CNN often achieve strong accuracy but are usually deployed offline rather than in real-time systems. Only a small number of works (W1 and W4) incorporate 3D digital twin visualizations, and these rely on Unity, which is relatively heavy, proprietary, and not integrated with predictive machine learning pipelines. Furthermore, no existing solution combines low-cost sensors, a web-based 3D digital twin, multi-stage machine learning (rule-based logic and anomaly detection), and a real-time dashboard in a unified system. Additionally, none of the reviewed works address the challenge of retrofitting legacy FDM printers such as the BCN3D+ without modifying the original firmware \cite{tudorache2025current,botin2022digital}.
+
+\section{Research Positioning and Contributions}
+
+Based on these gaps, this work contributes in four main ways.
+
+\textbf{Integrated 3D digital twin with multi-stage ML.} The system combines a real-time Three.js-based digital twin with a two-stage machine learning pipeline: rule-based detection (Tier 0) and Isolation Forest anomaly detection (Tier 1). This bridges the separation between visualization and predictive intelligence seen in prior works.
+
+\textbf{Browser-native, zero-install interface.} Unlike Unity-based systems, the dashboard runs in any standard web browser using Vite, React, and Three.js. No software installation or proprietary license is required, making the solution accessible and lightweight.
+
+\textbf{Two-stage cold-start learning architecture.} Rule-based detection operates from day one and generates pseudo-labels to bootstrap the Isolation Forest model (Tier 1). This addresses the common problem of limited labeled failure data at initial deployment, as noted in the literature \cite{kolok2025lowcost,tudorache2025current}.
+
+\textbf{Legacy printer retrofit without firmware modification.} External sensors (MPU6050 on the X-carriage, KY-013 on the heatsink) are connected through an ESP8266 gateway and the filament is simply connected via a USB port. The original Marlin firmware remains unchanged, and the system works with any OctoPrint-managed FDM printer. This demonstrates a transferable methodology for retrofitting legacy machines.
+
+The total hardware cost is kept below 50 euros, making the solution accessible to small-scale manufacturers, laboratories, and makerspaces \cite{shomenov2025}.
+
+\endinput

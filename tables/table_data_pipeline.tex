@@ -1,0 +1,20 @@
+\begin{tabular}{|L{4.5cm}|L{8.5cm}|}
+	\hline
+	\rowcolor{primary}
+	\textbf{\color{white}Component} & \textbf{\color{white}Configuration details} \\
+	\hline
+	Firmware bridge & OctoPrint1.11.x running on Raspberry Pi, MQTT plugin enabled, REST API active on port 5000 \\
+	\hline
+	Communication protocol & MQTT (Mosquitto broker on Raspberry Pi), QoS level 1, topics: /printer/imu, /printer/temp, /printer/state \\
+	\hline
+	ML inference backend & Python 3.10 -- Tier 1: Isolation Forest + One-Class SVM (scikit-learn 1.3); Tier 2: XGBoost 2.0; Tier 3: LSTM + 1D-CNN + Autoencoder (TensorFlow 2.13) \\
+	\hline
+	Web dashboard & Vite 4 + React 18 + Three.js r155, served on localhost:3000, WebSocket client for real-time event feed \\
+	\hline
+	Desktop encapsulation & Electron 28 (Chromium-based wrapper), enables offline use and OS-level notifications \\
+	\hline
+	3D model source & BCN3D+ CAD model exported from Fusion 360 as glTF 2.0, loaded by Three.js GLTFLoader \\
+	\hline
+	Target printer & BCN3D+ FDM printer, Marlin 2.0 firmware, 0.4 mm brass nozzle, PLA/PETG/TPU filaments \\
+	\hline
+\end{tabular}

@@ -1,0 +1,35 @@
+% ============================================================
+% TABLE 1.5: Synthesis matrix - capabilities of existing works vs. present thesis (W10)
+% ============================================================
+% Usage: \input{tables/table_synthesis_matrix}
+% ============================================================
+
+\begin{tabular}{|L{3.5cm}|C{0.8cm}|C{0.8cm}|C{0.8cm}|C{0.8cm}|C{0.8cm}|C{0.8cm}|C{0.8cm}|C{0.8cm}|C{0.8cm}|C{0.8cm}|}
+	\hline
+	\rowcolor{primary}
+	\textbf{\color{white}Capability / Dimension} & \textbf{\color{white}W1} & \textbf{\color{white}W2} & \textbf{\color{white}W3} & \textbf{\color{white}W4} & \textbf{\color{white}W5} & \textbf{\color{white}W6} & \textbf{\color{white}W7} & \textbf{\color{white}W8} & \textbf{\color{white}W9} & \textbf{\color{white}W10} \\
+	\hline
+	FDM-specific domain & $\checkmark$ & $\checkmark$ & $\checkmark$ & $\checkmark$ & $\checkmark$ & $\checkmark$ & $\sim$ & $\checkmark$ & $\checkmark$ & $\checkmark$ \\
+	\hline
+	Multi-modal sensor fusion & $\sim$ & $\sim$ & $\checkmark$ & $\sim$ & $\sim$ & $\sim$ & $\sim$ & $\checkmark$ & $\sim$ & $\checkmark$ \\
+	\hline
+	Real-time data acquisition & $\sim$ & $\sim$ & $\checkmark$ & $\sim$ & $\sim$ & $\sim$ & $\sim$ & $\sim$ & $\sim$ & $\checkmark$ \\
+	\hline
+	ML-based fault prediction & $\sim$ & $\checkmark$ & $\sim$ & $\checkmark$ & $\checkmark$ & $\checkmark$ & $\sim$ & $\sim$ & $\checkmark$ & $\checkmark$ \\
+	\hline
+	3D digital twin visualisation & $\checkmark$ & $\sim$ & $\sim$ & $\checkmark$ & $\sim$ & $\sim$ & $\sim$ & $\sim$ & $\sim$ & $\checkmark$ \\
+	\hline
+	Web-native UI (zero install) & $\sim$ & $\sim$ & $\sim$ & $\sim$ & $\sim$ & $\sim$ & $\sim$ & $\sim$ & $\sim$ & $\checkmark$ \\
+	\hline
+	Edge deployment (Rasp/ESP8266) & $\sim$ & $\sim$ & $\checkmark$ & $\sim$ & $\sim$ & $\sim$ & $\sim$ & $\sim$ & $\sim$ & $\checkmark$ \\
+	\hline
+	Total hardware cost < €50 & $\sim$ & $\sim$ & $\checkmark$ & $\sim$ & $\sim$ & $\sim$ & $\sim$ & $\sim$ & $\sim$ & $\checkmark$ \\
+	\hline
+	Open-source stack & $\sim$ & $\checkmark$ & $\checkmark$ & $\sim$ & $\checkmark$ & $\checkmark$ & $\sim$ & $\checkmark$ & $\checkmark$ & $\checkmark$ \\
+	\hline
+	Bidirectional DT (true Kritzinger) & $\sim$ & $\sim$ & $\checkmark$ & $\sim$ & $\sim$ & $\sim$ & $\sim$ & $\sim$ & $\sim$ & $\sim$ \\
+	\hline
+	\multicolumn{11}{c}{$\checkmark$ = fully implemented; $\sim$ = partially implemented or limited in scope} \\
+	\multicolumn{11}{l}{\textit{Note: W10 (Present Work) entries are projected based on design specifications.}} \\
+	\hline
+\end{tabular}

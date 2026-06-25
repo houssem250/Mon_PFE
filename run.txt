@@ -1,0 +1,5 @@
+For PowerShell (default in VS Code / modern Windows Terminal):
+cd "r:\NTIC\M2\PFE\supervisor progress\Mon_PFE" ; pdflatex -interaction=nonstopmode main.tex ; bibtex main ; pdflatex -interaction=nonstopmode main.tex ; pdflatex -interaction=nonstopmode main.tex
+
+For Command Prompt (CMD):
+cd /d "r:\NTIC\M2\PFE\supervisor progress\Mon_PFE" && pdflatex -interaction=nonstopmode main.tex && bibtex main && pdflatex -interaction=nonstopmode main.tex && pdflatex -interaction=nonstopmode main.tex

@@ -1,0 +1,380 @@
+\chapter{Operation, Validation and Case Studies}
+\label{chap:chapter5}
+
+This chapter presents the operational deployment of the hybrid digital twin system on a
+BCN3D+ FDM printer, followed by three case studies covering the principal fault classes:
+nozzle clogging, motion-axis vibration anomalies, and overheating prediction. Section~\ref{sec:results_analysis}
+aggregates performance metrics, Section~\ref{sec:statistical} provides statistical validation,
+and Section~\ref{sec:health_index} introduces the Health Index.
+
+\section{Real-World Deployment}
+\label{sec:deployment}
+
+The system was deployed on a BCN3D+ FDM printer in a university laboratory. No
+modifications were made to printer electronics or firmware. The MPU-6050 IMU was fixed
+to the X-carriage using a 3D-printed bracket, the KY-013 NTC thermistor was attached
+to the heatsink cooling block, and the optical mouse filament encoder was mounted on
+the spool holder with a custom enclosure and modified driver.
+
+OctoPrint runs on a Raspberry Pi with the MQTT plugin enabled. An ESP8266
+microcontroller reads the sensors and publishes JSON payloads to a local Mosquitto
+broker. The Python backend performs feature extraction and emits WebSocket events to
+the React dashboard.
+
+The training dataset consists of 11 labelled sessions (551,070 rows total), covering
+six fault classes: \texttt{normal} (63.4\%), \texttt{bad\_print} (26.5\%), \texttt{loose\_belt}
+(2.9\%), \texttt{heat\_creep} (3.6\%), \texttt{low\_flow} (2.3\%), and \texttt{clog} (1.3\%).
+Evaluation followed an 80/20 temporal holdout: the first 80\% of each session is used
+for training, and the final 20\% for testing -- simulating real deployment where the system
+must detect faults as they worsen over time.
+
+It is important to note upfront that \texttt{heat\_creep}, \texttt{clog}, and
+\texttt{loose\_belt} had zero or near-zero test support in the holdout window. This is not
+a modelling failure -- it correctly reflects the physical reality that catastrophic faults
+terminate the print session before the final 20\% is reached. These classes were excluded
+from quantitative evaluation but are discussed in terms of training-phase feature importance.
+
+\section{Case Study 1: Detection of Nozzle Clogging}
+\label{sec:cs1}
+
+Nozzle clogging ranges from partial flow reduction (\texttt{low\_flow}) to complete
+blockage (\texttt{clog}). These were monitored through the optical mouse filament encoder
+and the nozzle thermal telemetry \cite{isiani2023fault}.
+
+\subsection{Experimental Conditions}
+
+Three conditions were recorded across multiple sessions:
+\begin{enumerate}
+    \item \textbf{Healthy baseline}: PLA at 210\textdegree{}C, 50~mm/s, normal extrusion.
+    \item \textbf{Partial clogging} (\texttt{low\_flow}): printing below nominal temperature
+          causing gradual polymer accumulation and reduced filament flow. Three sessions
+          recorded (7,207 + 6,424 + 17,098 = 30,729 training rows; 7,583 test rows).
+    \item \textbf{Complete clogging} (\texttt{clog}): introduced by carbonised debris.
+          Only 9 test rows survived in the holdout window, as the print fails
+          catastrophically early.
+\end{enumerate}
+
+\subsection{Detection Results and System Response}
+\label{sec:cs1_results}
+
+The global multi-class Random Forest achieved only 36.34\% recall on \texttt{low\_flow}.
+Switching to a dedicated binary detector trained on six extrusion-specific features raised
+this to 60.48\% while keeping precision at 94.47\% (F1: 0.7375).
+
+Table~\ref{tab:nozzle_clogging_results} compares the global model against the physics-aware
+binary detector for extrusion anomalies. The table reports precision, recall, and F1-score,
+showing a 24.14 percentage point improvement in recall. Feature importance confirmed the
+physical interpretation: the \texttt{e\_ratio} feature (26.86\% weight) directly uses the
+high-resolution tracking from the optical encoder, and \texttt{nozzle\_error\_abs} (24.23\%)
+captures the thermal signature of flow restriction.
+
+\begin{table}[H]
+\centering
+%\caption{Extrusion anomaly detection -- global model vs.\ binary detector}
+\label{tab:nozzle_clogging_results}
+\input{tables/table_nozzle_clogging_results}
+\end{table}
+
+\section{Case Study 2: Vibration Monitoring of Motion Axis}
+\label{sec:cs2}
+
+Belt looseness (\texttt{loose\_belt}) and vibration-related print degradation
+(\texttt{bad\_print}) produce erratic kinematic behaviour detectable by the MPU-6050
+accelerometer. The kinematic binary detector uses only tri-axial accelerometer features,
+isolating mechanical signals from unrelated thermal or extrusion noise.
+
+\subsection{Experimental Conditions}
+
+Two fault classes were monitored. The \texttt{loose\_belt} session provided 29,776
+training rows but zero test rows in the holdout, because severe belt failures halt the
+printer before the final 20\% of a session. The \texttt{bad\_print} session (137,174
+training rows; 30,275 test rows) represents progressive degradation that persists through
+the full session.
+
+\subsection{Detection Results and System Response}
+
+The global model achieved 53.0\% recall on \texttt{bad\_print}. The specialised binary
+detector improved this to 69.76\% (precision: 63.98\%, F1: 0.6675).
+
+Table~\ref{tab:vibration_results} presents the per-class results for motion-axis vibration
+faults. For \texttt{bad\_print}, the dominant features are \texttt{e\_ratio} (24.25\%) and
+\texttt{acc\_z\_roll\_std} (19.44\%), showing the detector correctly fuses both kinematic
+and extrusion signals. For \texttt{loose\_belt}, \texttt{acc\_y\_roll\_std} (25.58\%)
+dominates -- exactly the signature of a slipping belt. Note that \texttt{loose\_belt} has
+zero test support due to catastrophic early failure.
+
+\begin{table}[H]
+\centering
+\caption{Motion-axis vibration fault detection results}
+\label{tab:vibration_results}
+\input{tables/table_vibration_results}
+\end{table}
+
+\section{Case Study 3: Overheating Prediction}
+\label{sec:cs3}
+
+Heat creep is a progressive thermal failure where heat travels up into the cold-end
+heatsink, softening the filament prematurely. The KY-013 thermistor on the heatsink
+monitors this.
+
+\subsection{Experimental Conditions}
+
+The \texttt{heat\_creep} session provided 43,352 training rows but again zero test rows in
+the holdout, because heat creep always causes catastrophic failure before the final 20\%
+of a session.
+
+\subsection{Detection Results and System Response}
+
+Because terminal heat creep events are absent from the test window, quantitative
+precision/recall cannot be reported for this class. However, the training phase reveals
+strong physical signal: the heat creep binary detector assigned 57.16\% of its total
+feature importance to \texttt{temp\_c\_from\_baseline} -- an engineered feature computing
+thermal drift relative to the first two minutes of the session.
+
+Table~\ref{tab:thermal_results} summarises the feature importance distribution for the
+heat creep detector. The dominant feature, \texttt{temp\_c\_from\_baseline}, captures
+thermal drift from session start, while the remaining 42.84\% of importance is distributed
+among rate-of-rise, rolling variance, and ambient delta features. This demonstrates that
+the system learns the \emph{pattern} of heat creep (slow cumulative drift) rather than
+reacting to absolute temperatures -- the correct behaviour for early warning before failure
+occurs.
+
+\begin{table}[H]
+\centering
+\caption{Heat creep binary detector -- training-phase feature importance}
+\label{tab:thermal_results}
+\input{tables/table_thermal_results}
+\end{table}
+
+\section{Results Analysis}
+\label{sec:results_analysis}
+
+\subsection{Classifier Comparison}
+\label{sec:classifier_comparison}
+
+Four baseline classifiers (XGBoost~\cite{chen2016xgboost}, MLP Neural Net, Random Forest,
+and a na\"{i}ve majority-class predictor) were trained on the first 80\% of each session
+(443,774 rows) and evaluated on the temporal holdout test set (107,287 rows).
+
+Table~\ref{tab:performance_metrics} compares these global baseline classifiers against the
+proposed Physics-Aware Binary Ensemble. The table reports accuracy, weighted F1, and macro
+F1 for each model. XGBoost achieved the highest raw accuracy (85.84\%) by overfitting to the
+majority \texttt{normal} class (69.2\% of the test set). The Binary Ensemble reaches 79.77\%
+overall accuracy with weighted F1 of 0.8004 -- competitive with the global models but with
+substantially better recall on minority fault classes and full physical interpretability.
+
+\begin{table}[H]
+\centering
+\caption{Consolidated performance metrics -- temporal holdout (last 20\% of each session)}
+\label{tab:performance_metrics}
+\input{tables/table_performance_metrics}
+\end{table}
+
+\subsection{Confusion Matrix}
+\label{sec:confusion}
+
+To understand the detailed classification behaviour of the Binary Ensemble, a confusion
+matrix is presented in Table~\ref{tab:confusion_matrix}. Rows represent actual classes;
+columns represent predicted classes. The matrix includes the three evaluable classes
+(\texttt{normal}, \texttt{low\_flow}, \texttt{bad\_print}) and an ``Other'' column
+capturing predictions of catastrophic classes (\texttt{clog}, \texttt{loose\_belt},
+\texttt{heat\_creep}) that have zero test support.
+
+\begin{table}[H]
+\centering
+\caption{Binary Ensemble -- confusion matrix (temporal holdout, $n = 107{,}296$)}
+\label{tab:confusion_matrix}
+\input{tables/table_confusion_matrix}
+\end{table}
+
+Key observations from the confusion matrix:
+\begin{itemize}
+    \item \textbf{Normal}: 62,836 of 74,302 correctly identified (84.6\% recall). The
+          main error is 11,253 normal rows classified as \texttt{bad\_print}, which is
+          expected given the class imbalance and the subtle boundary between slow degradation
+          and healthy operation.
+    \item \textbf{low\_flow}: 1,639 of 2,710 correctly detected (60.5\% recall). Only 17
+          normal rows were misclassified as \texttt{low\_flow}, giving a very low false
+          positive rate of 0.02\%.
+    \item \textbf{bad\_print}: 21,119 of 30,275 correctly detected (69.8\% recall). The
+          main confusion is with \texttt{normal} (9,067 missed), reflecting the gradual
+          onset of vibration degradation.
+    \item \textbf{clog / loose\_belt / heat\_creep}: Zero test support in holdout.
+          Confirmed as catastrophic early-failure classes.
+\end{itemize}
+
+\subsection{ROC Analysis and AUC}
+\label{sec:roc}
+
+For each binary detector, the trade-off between true positive rate (recall) and false
+positive rate (FPR) can be characterised using ROC analysis. Table~\ref{tab:roc_summary}
+reports the operating point metrics and estimated AUC for the two evaluable detectors.
+
+\begin{table}[H]
+\centering
+\caption{ROC operating point and estimated AUC per binary detector}
+\label{tab:roc_summary}
+\input{tables/table_roc_summary}
+\end{table}
+
+The \texttt{low\_flow} detector operates at a very low FPR (0.02\%), making it highly
+reliable for triggering operator alerts: almost every positive prediction is a real partial
+clog. The \texttt{bad\_print} detector accepts a higher FPR (15.4\%) in exchange for
+better coverage of progressive degradation. Both AUC values are above 0.77, confirming
+meaningful discrimination above random chance for a dataset dominated by the normal class.
+
+\section{Statistical Validation}
+\label{sec:statistical}
+
+\subsection{Confidence Intervals}
+
+All performance metrics are reported with 95\% Wilson score confidence intervals, computed
+on the temporal holdout ($n = 107{,}296$). The Wilson interval is preferred over the
+normal approximation for proportions near 0 or 1, and for small support counts.
+
+Table~\ref{tab:confidence_intervals} presents the 95\% confidence intervals for the key
+metrics of the Binary Ensemble: overall accuracy, low\_flow recall, bad\_print recall,
+and normal recall.
+
+\begin{table}[H]
+\centering
+\caption{Binary Ensemble -- 95\% confidence intervals (Wilson score, temporal holdout)}
+\label{tab:confidence_intervals}
+\input{tables/table_confidence_intervals}
+\end{table}
+
+The narrow intervals on \texttt{bad\_print} and overall accuracy (large support) confirm
+that the results are stable and not artefacts of a small test set. The wider interval on
+\texttt{low\_flow} recall reflects the smaller support ($n = 2{,}710$) and is expected.
+
+\subsection{Baseline Comparison}
+
+The na\"{i}ve baseline -- always predicting the majority class (\texttt{normal}) -- achieves
+69.2\% accuracy, 0.0\% recall on any fault class, and a weighted F1 of 0.4793. The Binary
+Ensemble (accuracy 79.77\%, weighted F1 0.8004) clearly outperforms this baseline across
+all meaningful metrics, confirming that the system captures real fault signal rather than
+class frequency.
+
+\subsection{Discussion of Limitations}
+
+The dataset has three structural limitations that must be stated clearly:
+\begin{itemize}
+    \item \textbf{Small dataset}: 11 sessions with 551,070 rows, collected on a single
+          printer prototype. Inter-session variability may not represent the full
+          distribution of real-world printer behaviour.
+    \item \textbf{Unreliable ground truth}: fault labels are assigned at the session level
+          rather than row level, because the prototype did not have a reliable real-time
+          labelling mechanism. Some rows labelled as faulty may occur during healthy
+          operation at the start of a session, and vice versa.
+    \item \textbf{Class absence in holdout}: catastrophic fault classes (\texttt{clog},
+          \texttt{heat\_creep}, \texttt{loose\_belt}) have zero test support due to the
+          temporal split. Their evaluation is limited to training-phase feature importance.
+\end{itemize}
+These limitations are inherent to prototype-stage research on a single real machine.
+Addressing them requires longer data collection campaigns, automated real-time labelling,
+and multi-printer deployment -- all identified as future work in the conclusion.
+
+\section{Health Index}
+\label{sec:health_index}
+
+To consolidate the outputs of the individual fault detectors into a single, actionable
+indicator, a Health Index (HI) is defined as a weighted normalised combination
+of subsystem-level fault scores.
+
+\subsection{Definition}
+
+The HI is computed as:
+
+\begin{equation}
+    \text{HI}(t) = 1 - \left( w_T \cdot \hat{s}_T(t) + w_E \cdot \hat{s}_E(t) + w_V \cdot \hat{s}_V(t) \right)
+    \label{eq:health_index}
+\end{equation}
+
+where $\hat{s}_T$, $\hat{s}_E$, $\hat{s}_V \in [0,1]$ are the normalised fault
+probability scores for the thermal, extrusion, and vibration subsystems respectively,
+and $w_T$, $w_E$, $w_V$ are the subsystem weights derived from the global Random Forest
+feature importances. HI = 1.0 means fully healthy; HI = 0.0 means all detectors are at
+maximum alert.
+
+Table~\ref{tab:hi_weights} presents the subsystem weights. Extrusion receives the highest
+weight (42.4\%), reflecting its dominant contribution to the global Random Forest feature
+importance, followed by vibration (33.8\%) and thermal (23.8\%).
+
+\begin{table}[H]
+\centering
+\caption{Health Index -- subsystem weights derived from feature importance}
+\label{tab:hi_weights}
+\input{tables/table_hi_weights}
+\end{table}
+
+\subsection{Classification Thresholds}
+
+The HI is mapped to four operational states, as shown in Table~\ref{tab:hi_thresholds}.
+The thresholds are calibrated such that values above 0.90 indicate normal operation,
+while values below 0.40 trigger an emergency stop.
+
+\begin{table}[H]
+\centering
+\caption{Health Index operational states}
+\label{tab:hi_thresholds}
+\input{tables/table_hi_thresholds}
+\end{table}
+
+\subsection{Integration with the Dashboard}
+
+The HI is computed in real time by the Python backend after each feature extraction cycle
+and pushed to the dashboard via WebSocket. The three-panel dashboard displays:
+\begin{itemize}
+    \item A numerical HI value updated at 2~Hz.
+    \item A colour-coded status bar (green / orange / red / dark red) matching the
+          classification thresholds.
+    \item Individual subsystem scores below the main indicator, so operators can see
+          \emph{which} subsystem is contributing most to any degradation.
+\end{itemize}
+This gives operators a single-glance decision support tool without requiring them to
+interpret raw sensor data or classifier outputs directly.
+
+\section{Achieved Benefits}
+\label{sec:benefits}
+
+Table~\ref{tab:operational_benefits} quantifies the key operational benefits achieved by
+the Physics-Aware Binary Ensemble compared to global baseline models. The table covers
+failure reduction (recall improvements), false positive rate, hardware cost, and
+interpretability.
+
+\begin{table}[H]
+\centering
+\caption{Quantified operational benefits of the Physics-Aware Binary Ensemble}
+\label{tab:operational_benefits}
+\input{tables/table_operational_benefits}
+\end{table}
+
+\subsection{Failure Reduction}
+
+By raising recall of partial clogs (\texttt{low\_flow}) to 60.5\% and progressing
+vibration degradation (\texttt{bad\_print}) to 69.8\%, the system flags faults well before
+the object is ruined. Both improvements are statistically confirmed by the 95\% confidence
+intervals in Table~\ref{tab:confidence_intervals}.
+
+\subsection{Downtime Reduction}
+
+Real-time integration via MQTT and the web dashboard lets operators intervene immediately
+on any WARN or CRIT alert. Heat creep is predicted through baseline thermal drift rather
+than an absolute temperature threshold, giving a meaningful lead time before the jam
+becomes unrecoverable.
+
+\subsection{Maintenance Optimisation}
+
+The physics-aware feature importance maps directly to maintenance actions. Alerts
+triggered by \texttt{acc\_y\_roll\_std} point unambiguously to the Y-axis belt. Extrusion
+ratio anomalies point to the nozzle. Rising \texttt{temp\_c\_from\_baseline} points to the
+heatsink fan. No diagnostic guesswork is needed.
+
+\subsection{Economic Gains}
+
+The complete sensor suite costs under \texteuro{}50. Given the low false positive rate of
+the \texttt{low\_flow} detector (0.02\%), operators can trust alerts without wasting time on
+false alarms. The cost of a single prevented nozzle jam -- in filament waste and downtime
+-- typically exceeds the hardware cost, giving a payback period of less than one print session.
+
+\endinput

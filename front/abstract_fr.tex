@@ -1,0 +1,11 @@
+\begin{abstractFr}
+	Dans le contexte de l’Industrie 4.0 et de la démocratisation des systèmes de fabrication additive, les imprimantes 3D FDM sont de plus en plus utilisées dans des environnements de production, de prototypage rapide et de recherche. Toutefois, leur fiabilité reste limitée par des défaillances fréquentes telles que le bouchage de buse, les vibrations anormales des axes de déplacement et les phénomènes de surchauffe, entraînant des arrêts non planifiés et une dégradation de la qualité d’impression. 
+	Ce travail propose le développement et la mise en œuvre d’un jumeau numérique hybride dédié à la maintenance prédictive d’une imprimante 3D BCN3D+. L’objectif principal est de permettre la surveillance en temps réel et l’anticipation des défaillances afin de réduire les interruptions de production et d’optimiser la durée de vie de la machine. 
+	Le système repose sur une architecture multi-niveaux combinant modélisation géométrique et comportementale, synchronisée en temps réel via une infrastructure IoT. La partie matérielle est composée d’un capteur de vibration MPU-6050 et d’un capteur de température KY-013, connectés à un microcontrôleur ESP8266 assurant l’acquisition et la transmission des données. De plus, une souris optique avec un boîtier et un pilote modifiés est utilisée comme encodeur de filament. 
+	Le traitement des données suit une approche hybride à plusieurs niveaux : règles déterministes (Tier 0), détection d’anomalies via Isolation Forest (Tier 1) et classification supervisée avec XGBoost (Tier 2). Cette architecture permet une détection progressive allant de l’identification d’anomalies simples à la prévision de pannes complexes. 
+	La validation du système a été réalisée à travers trois scénarios expérimentaux : obstruction de buse, anomalies vibratoires des axes de mouvement et surchauffe. Les résultats montrent une précision globale pondérée de 90,8 \%, une réduction de 67 \% du taux d’échec d’impression et une diminution de 46 \% des temps d’arrêt non planifiés. Le coût matériel total est inférieur à 50 euros, ce qui rend la solution accessible aux PME et aux espaces de fabrication (makerspaces).
+\end{abstractFr}
+
+\begin{keywordsFr}
+	Jumeau numérique, maintenance prédictive, impression 3D, FDM, Internet des objets, apprentissage automatique, Industrie 4.0.
+\end{keywordsFr}

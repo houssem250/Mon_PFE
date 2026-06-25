@@ -1,0 +1,40 @@
+% ============================================================
+% TABLE: Sensor selection summary (longtable)
+% ============================================================
+\rowcolors{2}{white}{primary!10}
+\begin{longtable}{|P{2.2cm}|P{2.4cm}|P{2.4cm}|P{2.2cm}|P{1.8cm}|P{2.8cm}|}
+    \caption{Sensor selection summary for BCN3D+ digital twin prototype}
+    \label{tab:sensor_selection} \\
+
+	\hline
+	\rowcolor{primary}
+	\textbf{\color{white}Sensor / Module} & \textbf{\color{white}Measured Parameter} & \textbf{\color{white}Target Failure Mode} & \textbf{\color{white}Physical Placement} & \textbf{\color{white}Sampling Rate} & \textbf{\color{white}Implementation} \\
+	\hline
+	\endfirsthead
+
+	\hline
+	\rowcolor{primary}
+	\textbf{\color{white}Sensor / Module} & \textbf{\color{white}Measured Parameter} & \textbf{\color{white}Target Failure Mode} & \textbf{\color{white}Physical Placement} & \textbf{\color{white}Sampling Rate} & \textbf{\color{white}Implementation} \\
+	\hline
+	\endhead
+
+	\hline
+	\multicolumn{6}{r}{\textit{Continued on next page\ldots}} \\
+	\endfoot
+
+	\hline
+	\endlastfoot
+
+	KY-013 (NTC Thermistor) & Contact temperature (\textdegree{}C) & Nozzle clogging, overheating, heat creep & Extruder heatsink (primary); heated bed (secondary) & 2 Hz & ESP8266 ADC, Steinhart-Hart conversion; $R_{\mathrm{ref}} = 10\,\mathrm{k}\Omega$ \\
+	\hline
+	MPU-6050 / GY-521 (MEMS IMU) & 3-axis acceleration + gyroscope & Nozzle clogging (vibration spike), bearing wear, step loss, belt resonance & X-axis carriage, adjacent extruder nozzle & 50 Hz & I\textsuperscript{2}C to ESP8266; raw ADC integers $\rightarrow$ feature engineering (RMS, kurtosis, crest factor) \\
+	\hline
+	OctoPrint MQTT telemetry & Position (X, Y, Z, E mm), feedrate, nozzle/bed temperature setpoints and actuals, print state, filament used & Step loss, misalignment, overheating (via setpoint deviation) & Software bridge, no additional hardware & $\sim$1--5 Hz (polling interval) & OctoPrint MQTT plugin; JSON payloads to Mosquitto broker on Raspberry Pi \\
+	\hline
+	Position / end-stop sensors & Limit switch state (triggered / free) & Step loss, misalignment (homing failure) & X-min, Y-min, Z-min positions & Event-driven & Firmware-native; exposed via OctoPrint API, no additional hardware required \\
+	\hline
+	Camera (optional --- USB / Pi Camera) & Frame images of print surface & Layer delamination, warping, geometric defects & Fixed position above build plate, facing print surface & 1--5 fps & Not included in v1 baseline, reserved for future vision-based Tier 3 (DL) extension \\
+	\hline
+	Filament encoder (optical mouse) & 1-axis filament movement (mm/s) & Nozzle clogging, irregular filament flow, filament runout & Between filament spool and extruder motor & 1--5 Hz & Custom driver manipulation and manual calibration of raw optical sensor data \\
+	\hline
+\end{longtable}

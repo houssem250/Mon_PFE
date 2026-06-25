@@ -1,0 +1,11 @@
+\begin{abstractEn}
+	In the context of Industry 4.0 and the increasing democratization of additive manufacturing systems, Fused Deposition Modeling (FDM) 3D printers are widely used in prototyping, research, and small-scale production environments. However, their operational reliability is still limited by frequent failures such as nozzle clogging, abnormal motion-axis vibrations, and overheating, leading to unplanned downtime and degraded print quality. 
+	This work presents the design and implementation of a hybrid digital twin for predictive maintenance of a BCN3D+ 3D printer. The main objective is to enable real-time monitoring and early fault prediction in order to minimize production interruptions and optimize machine lifespan. 
+	The proposed system is based on a multi-layer architecture combining geometric and behavioral modeling, synchronized in real time through an IoT-based infrastructure. The hardware setup includes an MPU-6050 vibration sensor and a KY-013 temperature sensor, connected to an ESP8266 microcontroller responsible for data acquisition and transmission. In addition, an optical mouse with a modified enclosure and driver serves as a filament encoder. 
+	Data processing follows a hierarchical hybrid pipeline: deterministic rule-based logic (Tier 0), anomaly detection using Isolation Forest (Tier 1), and supervised classification using XGBoost (Tier 2). This layered approach enables a progressive detection strategy ranging from simple anomaly identification to advanced failure forecasting. 
+	The system was validated through three experimental case studies: nozzle clogging, motion-axis vibration anomalies, and overheating conditions. Results demonstrate a weighted overall accuracy of 90.8\%, a 67\% reduction in print failure rate, and a 46\% decrease in unplanned downtime. The total hardware cost remains below 50 euros, making the solution highly accessible to SMEs and makerspaces.
+\end{abstractEn}
+
+\begin{keywordsEn}
+	Digital twin, predictive maintenance, 3D printing, FDM, Internet of Things, machine learning, Industry 4.0.
+\end{keywordsEn}

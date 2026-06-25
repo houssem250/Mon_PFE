@@ -1,0 +1,39 @@
+% ============================================================
+% TABLE: Engineering challenges (longtable)
+% ============================================================
+\rowcolors{2}{white}{primary!10}
+\begin{longtable}{|P{3.2cm}|P{3.8cm}|P{7.0cm}|}
+	\hline
+	\rowcolor{primary}
+	\textbf{\color{white}Challenge} & \textbf{\color{white}Root cause} & \textbf{\color{white}Adopted solution} \\
+	\hline
+	\endfirsthead
+
+	\hline
+	\rowcolor{primary}
+	\textbf{\color{white}Challenge} & \textbf{\color{white}Root cause} & \textbf{\color{white}Adopted solution} \\
+	\hline
+	\endhead
+
+	\hline
+	\multicolumn{3}{r}{\textit{Continued on next page\ldots}} \\
+	\endfoot
+
+	\hline
+	\endlastfoot
+
+	Three.js/React DOM race condition & Three.js bootstrapScene() appended canvas to document.body; React useEffect tried to move it into a managed <div> before window.app was initialised & Decoupled bootstrapping: Three.js canvas is created and mounted first via a Promise chain; React renders around it using a stable ref container. window.app is guaranteed to exist before React's useEffect fires. \\
+	\hline
+	Coordinate drift in G-code synchronisation & OctoPrint telemetry cmdIndex and local GCodeLoader command list counted different G-code commands (different whitespace/comment handling), causing pointer drift over long prints & Unified command list: aligned the counted command types (G0, G1, G2, G3, G4, G28, G92) identically in both OctoPrint plugin and GCodeLoader.js. Drift eliminated in controlled testing. \\
+	\hline
+	`Ghost lines' in filament renderer & Travel moves (G0, no extrusion) were not reliably distinguished from extrusion moves (G1 with E parameter) in real-time MQTT stream, producing erroneous filament segments during head repositioning & Sticky extrusion state: FilamentRenderer.appendBreak() is called on every G0/travel packet; isExtruding state is made sticky --- it remains True until an explicit non-extrusion move is received, not on every packet boundary. \\
+	\hline
+	`Snapping' head on non-motion MQTT packets & Temperature and progress update packets (which lack XYZ coordinates) were incorrectly triggering nozzle position updates, causing the virtual head to jump to (0,0,0) & Motion-packet filter: streaming logic restricted to update carriage position ONLY on Motion-type MQTT packets (packets containing valid x\_mm, y\_mm fields). Non-motion packets update only their respective sensor panels. \\
+	\hline
+	Cold-start ML with no labelled data & On a new printer deployment, no historical fault data exists --- Tier 1 cannot be calibrated and Tier 2 has no labels & Three-tier architecture: Tier 0 deterministic rules operate from day one with zero data. Tier 0 fault events are automatically labelled and stored, bootstrapping Tier 1 and Tier 2 training after the first 10 healthy prints and first fault events. \\
+	\hline
+	Temporal misalignment between two SQLite databases & printer\_data.db (OctoPrint, $\sim$1 Hz) and sensor\_data.db (ESP8266, 50 Hz) have independent clocks with $\sim$200 ms acquisition-to-broker latency difference & merge\_asof alignment with configurable latency\_ms = 200 ms offset applied to sensor timestamps before joining. Tolerance window $\pm$500 ms handles jitter without data loss. \\
+	\hline
+	MQTT to browser WebSocket bridge & Standard MQTT (TCP port 1883) is not directly consumable by a browser's JavaScript environment --- browsers support only ws:// or wss:// WebSocket connections & Dedicated Python asyncio bridge process: subscribes to all printer/\# MQTT topics via paho-mqtt, forwards each message as JSON to a websockets server on port 8765; all connected browser clients receive the message within the same event loop tick. \\
+	\hline
+\end{longtable}

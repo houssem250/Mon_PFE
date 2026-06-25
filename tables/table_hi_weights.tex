@@ -1,0 +1,16 @@
+\small
+\begin{tabular}{|L{4.5cm}|C{3.5cm}|L{5.5cm}|}
+\hline
+\rowcolor{primary}
+\textbf{\color{white}Subsystem} & \textbf{\color{white}Weight ($w$)} & \textbf{\color{white}Key Features} \\
+\hline
+Extrusion ($w_E$) & 0.424 & \texttt{e\_ratio}, \texttt{nozzle\_error\_abs}, \texttt{filament\_slip} \\
+\hline
+Vibration ($w_V$) & 0.338 & \texttt{acc\_y\_roll\_std}, \texttt{acc\_z\_roll\_std}, \texttt{acc\_x\_fft\_peak} \\
+\hline
+Thermal ($w_T$) & 0.238 & \texttt{temp\_c\_from\_baseline}, \texttt{heatsink\_rate\_of\_rise} \\
+\hline
+\multicolumn{3}{|l|}{\textit{Note: Weights normalised from global Random Forest feature importances.}} \\
+\multicolumn{3}{|l|}{\textit{Sum of weights = 1.000.}} \\
+\hline
+\end{tabular}

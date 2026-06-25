@@ -1,0 +1,39 @@
+\chapter*{General Introduction}
+\label{chap:introduction}
+\addcontentsline{toc}{chapter}{General Introduction}
+
+\section*{1. Background}
+Industry 4.0 has changed how factories operate. Machines now communicate with each other, and production decisions rely on real data rather than guesses. Additive manufacturing, especially 3D printing, is a key part of this change. Among 3D printing technologies, Fused Deposition Modeling (FDM) is the most popular because it is affordable and has a large open‑source community.
+
+\section*{2. Problem Statement}
+FDM printers lack in reliability. In real‑world use, failure rates can exceed 20\%, and material waste can reach 34\%. Common problems include clogged nozzles, layer shifts, strange vibrations, and overheating. These issues cause unexpected stops, wasted filament, and low productivity. Most desktop FDM printers have no monitoring system, and fixing problems after they happen is expensive and time‑consuming.
+
+\section*{3. Thesis Objectives}
+The main goals of this thesis are:
+\begin{itemize}
+    \item Review existing approaches for fault detection and digital twins in FDM printing.
+    \item Design a hybrid digital twin that combines a 3D visual model with machine learning.
+    \item Build a low‑cost, non‑invasive hardware and software prototype.
+    \item Detect and predict failures in real time.
+    \item Reduce unplanned downtime and print failures.
+\end{itemize}
+
+\section*{4. General Methodology}
+The work follows a structured plan:
+\begin{itemize}
+    \item Literature review and comparison of existing systems.
+    \item Functional analysis of the BCN3D+ printer and failure mode analysis (FMEA).
+    \item Design of a five‑layer digital twin architecture (physical, IoT, data processing, virtual model, supervision).
+    \item Implementation using off-the-shelf sensors (MPU-6050, KY-013), an ESP8266,an inexpensive optical mouse and a web dashboard.
+    \item Validation through three case studies: nozzle clogging, motion‑axis vibrations, and overheating.
+\end{itemize}
+
+\section*{Document Plan}
+This thesis is organised as follows:
+\begin{itemize}
+    \item \textbf{Chapter 1} presents the state of the art, a comparative study, and the research positioning.
+    \item \textbf{Chapter 2} describes the system analysis, FMEA, sensor selection, and data acquisition.
+    \item \textbf{Chapter 3} explains the design of the digital twin (architecture, geometric and behavioural models, real‑time synchronisation).
+    \item \textbf{Chapter 4} covers the implementation choices (hardware, software, dashboard).
+    \item \textbf{Chapter 5} shows the deployment and the three case studies, with performance metrics and benefits.
+\end{itemize}

@@ -1,0 +1,13 @@
+\begin{tabular}{|L{5.5cm}|C{3.5cm}|C{3.5cm}|}
+	\hline
+	\rowcolor{primary}
+	\textbf{\color{white}Feature} & \textbf{\color{white}Importance (\%)} & \textbf{\color{white}Physical Meaning} \\
+	\hline
+	\texttt{temp\_c\_from\_baseline} & \textbf{57.16\%} & Thermal drift from session start (first 2 min) \\
+	\hline
+	Other thermal features & 42.84\% & Rate-of-rise, rolling variance, ambient delta \\
+	\hline
+	\multicolumn{3}{|l|}{\textit{Note: No terminal test data available -- heat creep causes catastrophic failure before}} \\
+	\multicolumn{3}{|l|}{\textit{the final 20\% test window. Feature importance is from the training phase.}} \\
+	\hline
+\end{tabular}

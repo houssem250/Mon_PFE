@@ -1,0 +1,55 @@
+% ============================================================
+% TABLE: Complete technology stack (longtable)
+% ============================================================
+\rowcolors{2}{white}{primary!10}
+\begin{longtable}{|P{2.8cm}|P{3.2cm}|P{4.0cm}|P{4.5cm}|}
+	\hline
+	\rowcolor{primary}
+	\textbf{\color{white}Layer} & \textbf{\color{white}Component} & \textbf{\color{white}Technology / Version} & \textbf{\color{white}Role in implementation} \\
+	\hline
+	\endfirsthead
+
+	\hline
+	\rowcolor{primary}
+	\textbf{\color{white}Layer} & \textbf{\color{white}Component} & \textbf{\color{white}Technology / Version} & \textbf{\color{white}Role in implementation} \\
+	\hline
+	\endhead
+
+	\hline
+	\multicolumn{4}{r}{\textit{Continued on next page\ldots}} \\
+	\endfoot
+
+	\hline
+	\endlastfoot
+
+	Physical & Sensor node & ESP8266 (Espressif) + Arduino/C++ & Samples MPU-6050 at 50 Hz, KY-013 at 10 Hz, publishes JSON via MQTT \\
+	\hline
+	Physical & Edge gateway & Raspberry Pi (4 GB RAM), Raspbian OS & Hosts MQTT broker, Python backend, Flask server, SQLite databases \\
+	\hline
+	Physical & 3D printer & BCN3D+ / Marlin 1.x + OctoPrint & Physical asset; firmware telemetry via OctoPrint MQTT plugin \\
+	\hline
+	Backend & Data persistence & SQLite 3 (printer\_data.db + sensor\_data.db) & Two-database architecture for OctoPrint telemetry and sensor readings \\
+	\hline
+	Backend & MQTT broker & Eclipse Mosquitto 2.0.18 & Routes all sensor, telemetry, and alert messages on local network \\
+	\hline
+	Backend & Data collection & Python 3.11 (paho-mqtt, pandas, SQLite3) & printer\_data\_collector\_v5.py + sensor\_data\_collector.py \\
+	\hline
+	Backend & ML pipeline & Python 3.11 (scikit-learn, XGBoost, pandas) & PMx AI: data\_aligner.py, feature\_engineering.py, combiner.py \\
+	\hline
+	Backend & API server & Python Flask 2.x & Serves dashboard SPA + REST endpoints for print control and history \\
+	\hline
+	Frontend & Build tool & Vite 5 (ES Modules, HMR) & Zero-config dev server; $<$ 500 ms cold start; tree-shaken production build \\
+	\hline
+	Frontend & 3D rendering & Three.js r150+ (WebGL) & Renders printer GLB model, filament path, real-time axis animation \\
+	\hline
+	Frontend & UI framework & React 18 (TypeScript) & Component shell: fleet nav, sensor panels, alert feed, session timeline \\
+	\hline
+	Frontend & G-code engine & Custom GCodeLoader.js + PrintingMotion.js & Parses .gcode files; maps G0/G1/G28/G92 to axis motion classes \\
+	\hline
+	Frontend & Charts & Chart.js 4.x & Real-time time-series for temperature, vibration RMS, health score \\
+	\hline
+	Frontend & 3D asset & Blender 4.x $\rightarrow$ glTF 2.0 (.glb) & FDM printer model exported with named component hierarchy \\
+	\hline
+	Desktop (planned) & Wrapper & Electron.js (v30+) & Packages React/Vite/Three.js SPA as a cross-platform desktop app (v0.1 launched) \\
+	\hline
+\end{longtable}

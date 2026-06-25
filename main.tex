@@ -1,0 +1,52 @@
+\documentclass{masterthesis-uc2-en} 
+
+%% Metadata
+\department{Department Fundamental Computing and its Applications (IFA)}
+\specialty{Software Engineering and Smart Systems (ILSI)}
+\title{Hybrid Digital Twin for Predictive Maintenance} 
+\studentFullnameA{LEGHELIMI Houssem eddine}
+\studentFullnameB{CHAIN Mouadh}
+\supervisorFullnameA{DR.DJENOUHAT Manel}
+\session{June 2026}
+
+%% Additional commands
+\input{macros}
+
+\begin{document}
+
+
+\frontmatter
+	\maketitlepage
+	\pagestyle{plain}
+	\include{front/acknowledgments}
+	%\include{front/dedicate}  % Optional
+	
+	\addcontentsline{toc}{chapter}{Abstracts}
+	\input{front/abstract_ar}
+	\newpage  
+	\input{front/abstract_en}
+	\newpage 
+	\input{front/abstract_fr}
+	\clearpage
+	
+	\tableofcontents
+	\listoffigures
+	\listoftables
+	%\listofalgorithms  % Optional
+	\include{front/acronyms}
+
+\mainmatter
+	\pagestyle{fancy}
+	\include{chapters/introduction}
+	\include{chapters/chapter1}  % State of the Art, Comparative Study, Analysis & Synthesis
+	\include{chapters/chapter2}  % System Analysis and Data Acquisition
+	\include{chapters/chapter3}  % Design and Modeling of the Digital Twin
+	\include{chapters/chapter4}  % Implementation and Development
+	\include{chapters/chapter5}  % Operation, Validation and Case Studies
+	\include{chapters/conclusion}
+	
+\backmatter
+	\bibliographystyle{plainnat}
+	\bibliography{bibliography}
+
+\end{document}

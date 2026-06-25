@@ -1,0 +1,89 @@
+# LaTeX build artifacts
+*.aux
+*.bbl
+*.blg
+*.fdb_latexmk
+*.fls
+*.log
+*.out
+*.toc
+*.lof
+*.lot
+*.loa
+*.err
+*.synctex.gz
+*.synctex
+
+# Latexmk
+*.dpth
+*.md5
+*.auxlock
+
+# BibTeX
+*.bib.bak
+
+# LaTeX temporary files
+*.tmp
+*~
+*.bak
+*.swp
+*.swo
+
+# PDF output (uncomment if you want to ignore generated PDFs)
+# *.pdf
+
+# Directory for placing built files
+/build/
+/dist/
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+*.swp
+*.swo
+*~.nib
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Linux
+.directory
+
+# IDE and Editor
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+*.swp
+*.swo
+*~
+
+# Microsoft Office temporary files
+~$*
+*.tmp
+
+# Extracted files from docx
+plan_extracted/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Node (if using any Node tools)
+node_modules/
+npm-debug.log
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Project-specific ignores
+/temp/
+/cache/
+*.zip
+*.tar.gz

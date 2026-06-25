@@ -1,0 +1,26 @@
+\begin{tabular}{|L{4.5cm}|L{8.5cm}|}
+	\hline
+	\rowcolor{primary}
+	\textbf{\color{white}Hardware component} & \textbf{\color{white}Configuration details} \\
+	\hline
+	Microcontroller & ESP8266 (Espressif) -- dual-core 240 MHz, Wi-Fi 802.11n, I\textsuperscript{2}C master \\
+	\hline
+	Vibration/IMU sensor & MPU-6050 -- 3-axis accelerometer + 3-axis gyroscope, I\textsuperscript{2}C address 0x68, mounted on X-axis nozzle carriage, sampling at 50 Hz \\
+	\hline
+	Thermal sensor & KY-013 NTC thermistor -- mounted on heatsink cooling block, Steinhart-Hart linearisation, 3.3 V supply via ESP8266 ADC \\
+	\hline
+	Firmware bridge & OctoPrint1.11.x running on Raspberry Pi, MQTT plugin enabled, REST API active on port 5000 \\
+	\hline
+	Communication protocol & MQTT (Mosquitto broker on Raspberry Pi), QoS level 1, topics: /printer/imu, /printer/temp, /printer/state \\
+	\hline
+	ML inference backend & Python 3.10 -- Tier 1: Isolation Forest + One-Class SVM (scikit-learn 1.3, unsupervised anomaly detection); Tier 2: XGBoost 2.0 (supervised per-fault classifier, tabular features); Tier 3: LSTM + 1D-CNN + Autoencoder (TensorFlow 2.13 / Keras, temporal sequences) \\
+	\hline
+	Web dashboard & Vite 4 + React 18 + Three.js r155, served on localhost:3000, WebSocket client for real-time event feed \\
+	\hline
+	Desktop encapsulation & Electron 28 (Chromium-based wrapper), enables offline use and OS-level notifications \\
+	\hline
+	3D model source & BCN3D+ CAD model exported from Fusion 360 as glTF 2.0, loaded by Three.js GLTFLoader \\
+	\hline
+	Target printer & BCN3D+ FDM printer, Marlin 2.0 firmware, 0.4 mm brass nozzle, PLA/PETG/TPU filaments \\
+	\hline
+\end{tabular}

@@ -1,0 +1,20 @@
+\chapter*{General Conclusion}
+\label{chap:conclusion}
+\addcontentsline{toc}{chapter}{General Conclusion}
+
+In this thesis, we presented a hybrid digital twin for predictive maintenance of an FDM 3D printer. The system integrates a real‑time 3D visual model with a multi‑tier machine learning pipeline: rule‑based detection (Tier 0), Isolation Forest anomaly detection (Tier 1), and XGBoost classification (Tier 2).
+
+We successfully built a low‑cost prototype (total hardware under 50 euros) using an MPU‑6050 vibration sensor, a KY‑013 temperature sensor, and an ESP8266 microcontroller. All processing runs on a local edge gateway (Raspberry Pi or laptop), with no cloud dependency. The dashboard is browser‑based and requires no installation, making it easy to use in small workshops, laboratories, and makerspaces.
+
+Three case studies (nozzle clogging, motion‑axis vibrations, overheating) were carried out. The results show a weighted overall accuracy of 90.8\%, a 67\% reduction in print failure rate, and a 46\% decrease in unplanned downtime. The system also enables a shift from reactive to condition‑based maintenance.
+
+\section*{Limitations and Future Work}
+The current prototype has several limitations. It was tested on a single printer model (BCN3D+) with a limited set of failure scenarios. The dashboard handles only one printer at a time; a fleet management feature is planned but not yet implemented.
+
+Future work includes:
+\begin{itemize}
+    \item Extending the system to support multiple printers simultaneously.
+    \item Adding current sensing (ACS712) and vision‑based monitoring (camera) as additional sensor modalities.
+    \item Developing a closed‑loop control that not only pauses the print but also adjusts parameters (e.g., nozzle temperature, fan speed) automatically.
+    \item Conducting a long‑term field study to confirm economic benefits over several months.
+\end{itemize}

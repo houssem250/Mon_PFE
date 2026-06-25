@@ -1,0 +1,16 @@
+\begin{tabular}{|L{2.8cm}|L{3.0cm}|L{4.0cm}|L{4.5cm}|}
+	\hline
+	\rowcolor{primary}
+	\textbf{\color{white}Layer} & \textbf{\color{white}Name} & \textbf{\color{white}Components / Technologies} & \textbf{\color{white}Primary Function} \\
+	\hline
+	1 & Physical & BCN3D+ printer, KY-013 thermistor, MPU-6050 IMU, OctoPrint end-stops , filament mouse encoder & Generate raw sensor and firmware signals \\
+	\hline
+	2 & IoT / Acquisition & ESP8266 sensor node, Raspberry Pi gateway, Mosquitto broker & Acquire, condition, and transmit sensor data \\
+	\hline
+	3 & Data Processing & data\_aligner.py, feature\_engineering.py, PMx AI pipeline & Align, clean, feature-engineer, and classify fault signals \\
+	\hline
+	4 & Virtual Model & Blender 3D geometric model, Three.js renderer, ML engine & Maintain live 3D replica + health state of physical printer \\
+	\hline
+	5 & Supervision & React/Vite dashboard, alert engine, print session history & Present real-time DT state, alerts, and decisions to operator \\
+	\hline
+\end{tabular}

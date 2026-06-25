@@ -1,0 +1,51 @@
+% ============================================================
+% TABLE: Comparative overview of existing works (longtable)
+% ============================================================
+{
+\scriptsize
+\rowcolors{2}{white}{primary!10}
+\begin{xltabular}{\linewidth}{| c | c | J | J | J | J | K | J | J |}
+	\caption{Comparative overview of existing works on DT-based monitoring and fault detection for FDM 3D printing}
+	\label{tab:comparative_study} \\
+	\hline
+	\rowcolor{primary}
+	\textbf{\color{white}Ref} & \textbf{\color{white}Yr} & \textbf{\color{white}Application Field} & \textbf{\color{white}Sensors Used} & \textbf{\color{white}Prediction Model} & \textbf{\color{white}Software Tools} & \textbf{\color{white}RT Sync} & \textbf{\color{white}Key Result} & \textbf{\color{white}Main Limitation} \\
+	\hline
+	\endfirsthead
+
+	\caption[]{Comparative overview of existing works (\textit{continued})} \\
+	\hline
+	\rowcolor{primary}
+	\textbf{\color{white}Ref} & \textbf{\color{white}Yr} & \textbf{\color{white}Application Field} & \textbf{\color{white}Sensors Used} & \textbf{\color{white}Prediction Model} & \textbf{\color{white}Software Tools} & \textbf{\color{white}RT Sync} & \textbf{\color{white}Key Result} & \textbf{\color{white}Main Limitation} \\
+	\hline
+	\endhead
+
+	\hline
+	\multicolumn{9}{r}{\textit{Continued on next page\ldots}} \\
+	\endfoot
+
+	\hline
+	\endlastfoot
+
+	{[W1]} & 2022 & FDM -- LulzBot Taz Workhorse & OctoPrint telemetry (temp, position); external vibration & Data-driven soft-RT DT; no ML & Unity 3D, OctoPrint REST API, C\# & Soft RT (s) & Pos error $<$2\,mm; temp error $<$1.5\textdegree{}C; full DT validated & No ML; Unity requires GPU; high data volume \\
+	\hline
+	{[W2]} & 2023 & FDM -- nozzle clog detection & 3$\times$ accelerometers (nozzle, frame, bed) & PCA + SVM; FFT spectrogram & MATLAB, Python; no UI & Offline / batch & Sensor nearest nozzle: 71\% higher sensitivity; SVM classifies clog & No real-time; no DT; fixed geometries; no thermal data \\
+	\hline
+	{[W3]} & 2025 & FDM -- layer shifting, under/over-extrusion, excess vibration & Filament flow, IMU (vibration), nozzle position encoder & Rule-based + anomaly detection; autonomous correction & Custom embedded firmware; Python back-end & Hard RT (on-device) & Reliable autonomous correction; cost-effective & Limited ML; no 3D visualisation; single-printer \\
+	\hline
+	{[W4]} & 2023 & FDM -- geometric defect detection & Camera (image-based); OctoPrint telemetry & EfficientDet-Lite CNN & Unity 3D, OctoPrint, Raspberry Pi & Near RT (camera) & High-efficiency geometry detection; ML + 3D visualisation & Image-only; no fusion; lighting sensitivity; no PdM \\
+	\hline
+	{[W5]} & 2022 & FDM -- layer shifting (loosened bolts) & 2$\times$ accel (X/Y); 1$\times$ accel (Z); AE sensors & SVM + k-fold; RMS features & Python; no DT & Offline & Binary fault classification; identifies loosened-bolt signature & No DT; no thermal; no real-time; AE sensors expensive \\
+	\hline
+	{[W6]} & 2023 & FDM -- anomaly detection (structural/mechanical) & Vibration sensor (accelerometer) & LSTM (best); CNN, RNN, FFNN comparison & Python (TF/Keras); Jupyter & Near RT (streaming) & LSTM accuracy 97.17\%; outperforms CNN/RNN on temporal patterns & Single sensor; no thermal fusion; no DT; no web UI \\
+	\hline
+	{[W7]} & 2025 & Small rotating machinery -- transferable to FDM & ESP8266 + MEMS accel + MEMS mic & RMS + FFT; anomaly detection / basic ML & Embedded C++ on ESP8266; MQTT; Python & Soft RT (on-device) & $\sim$73\% detection; imbalance/wear faults; cost under \euro{}30 & Not FDM-specific; no DT visualisation; accuracy limited \\
+	\hline
+	{[W8]} & 2022 & FDM -- predictive quality monitoring & Thermocouples, IR thermometer, accelerometers & Time-frequency features; data-driven ML & Python; no dedicated DT platform & Near RT (streaming) & Multi-sensor fusion outperforms single-sensor; improves fault localisation & No web dashboard; no 3D DT; no edge deployment \\
+	\hline
+	{[W9]} & 2022 & FDM -- multi-sensor fault detection & Vibration, current, sound (Arduino DAQ) & CNN (94\%) + K-means + threshold-based & Arduino, Python, CNN model & Offline / batch & 94\% normal/fault classification accuracy & Offline only; no real-time; no DT visualisation \\
+	\hline
+	{[W10]} & 2025--26 & FDM -- BCN3D+; clog, heat creep, motion faults & MPU-6050 (accel+gyro), KY-013 NTC, OctoPrint MQTT & Hybrid: rule-based + SVM/RF + LSTM ensemble; weighted voting & ESP8266; Python/TF; Vite/React/Three.js; Electron; OctoPrint & Target: Soft RT ($<$1\,s) & Projected: multi-fault detection with 3D visualisation, low-cost ($<$\euro{}50) & Single printer; limited sensors; results pending \\
+	\hline
+\end{xltabular}
+}

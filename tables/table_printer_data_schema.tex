@@ -1,0 +1,67 @@
+% ============================================================
+% TABLE: Database schema for printer_data.db
+% ============================================================
+\scriptsize
+\rowcolors{2}{white}{primary!10}
+\begin{xltabular}{\linewidth}{| L{2.5cm} | L{2.5cm} | X |}
+\caption{Database schema for \texttt{printer\_data.db}}
+\label{tab:printer_data_schema} \\
+\hline
+\rowcolor{primary}
+\textbf{\color{white}Table} & \textbf{\color{white}Column} & \textbf{\color{white}Description / Purpose} \\
+\hline
+\endfirsthead
+
+\caption[]{Database schema for \texttt{printer\_data.db} (\textit{continued})} \\
+\hline
+\rowcolor{primary}
+\textbf{\color{white}Table} & \textbf{\color{white}Column} & \textbf{\color{white}Description / Purpose} \\
+\hline
+\endhead
+
+\hline
+\multicolumn{3}{r}{\textit{Continued on next page\ldots}} \\
+\endfoot
+
+\hline
+\endlastfoot
+
+% --- temperatures table
+temperatures & nozzle\_actual\_tool0 / tool1 & Actual nozzle temperature (°C) per extruder; primary thermal fault signal \\
+\hline
+temperatures & nozzle\_target\_tool0 / tool1 & Target setpoint; used to compute nozzle\_error = actual – target (heat creep, clog detection) \\
+\hline
+temperatures & bed\_actual\_c / bed\_target\_c & Heated bed temperature; bed adhesion fault detection \\
+\hline
+temperatures & chamber\_actual\_c & Enclosure ambient temperature; environmental context for thermal drift \\
+\hline
+
+% --- motion table
+motion & x\_mm / y\_mm / z\_mm & Current axis positions in mm; kinematic synchronisation with 3D DT model \\
+\hline
+motion & e\_mm & Extruder position (cumulative filament pushed); extrusion/retraction state detection \\
+\hline
+motion & feedrate\_mmmin & Current commanded feedrate; used in vibration\_per\_feedrate cross‑feature \\
+\hline
+
+% --- print_job table
+print\_job & filename / state & Active print file name and state (printing, paused, etc.); session context \\
+\hline
+print\_job & progress\_pct / elapsed\_s & Print progress percentage and elapsed time; temporal context for anomaly trending \\
+\hline
+print\_job & filament\_used\_mm & Cumulative filament consumed; material waste tracking \\
+\hline
+
+% --- printer_state table
+printer\_state & printing / paused / error & Boolean flags (0/1); gate for fault detection logic (only alert during active printing) \\
+\hline
+
+% --- events table
+events & event\_name / details\_json & OctoPrint firmware events (errors, warnings); labelled ground truth for ML training \\
+\hline
+
+% --- resends table
+resends & resend\_count / ratio & G‑code retransmission count and ratio; indicator of communication reliability / step loss \\
+\hline
+
+\end{xltabular}

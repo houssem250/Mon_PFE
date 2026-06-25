@@ -1,0 +1,33 @@
+% ============================================================
+% TABLE: PMx AI three-tier ML pipeline (longtable)
+% ============================================================
+\rowcolors{2}{white}{primary!10}
+\begin{longtable}{|P{2.5cm}|P{2.8cm}|P{3.0cm}|P{2.8cm}|P{3.2cm}|}
+	\hline
+	\rowcolor{primary}
+	\textbf{\color{white}Tier} & \textbf{\color{white}Algorithm} & \textbf{\color{white}Input Features} & \textbf{\color{white}Output} & \textbf{\color{white}Operational Condition} \\
+	\hline
+	\endfirsthead
+
+	\hline
+	\rowcolor{primary}
+	\textbf{\color{white}Tier} & \textbf{\color{white}Algorithm} & \textbf{\color{white}Input Features} & \textbf{\color{white}Output} & \textbf{\color{white}Operational Condition} \\
+	\hline
+	\endhead
+
+	\hline
+	\multicolumn{5}{r}{\textit{Continued on next page\ldots}} \\
+	\endfoot
+
+	\hline
+	\endlastfoot
+
+	Tier 0: Rules & Deterministic threshold logic & heatsink\_slope, nozzle\_error (during extrusion), kurtosis\_z, vibration\_per\_feedrate, measured_extrusion & confidence $\in [0,1]$, severity $\in \{\text{WARN}, \text{CRIT}\}$ & Active from day one --- no training data required \\
+	\hline
+	Tier 1: Isolation Forest & Unsupervised anomaly detection (scikit-learn) & All Group A + B + D features, StandardScaler normalised & anomaly\_prob $\in [0,1]$ via sigmoid mapping & Active after baseline calibration \\
+	\hline
+	Tier 2: XGBoost & Supervised fault classification & Labelled feature rows (fault class: clog=1, heat\_creep=1, motion=1) & tier2\_prob $\in [0,1]$ per fault class; max across classes & Active after sufficient labelled events (from Tier 0 triggers) \\
+	\hline
+	Ensemble combiner & Weighted voting across active tiers & rule\_confidence, anomaly\_prob, tier2\_prob & combined\_score, severity string $\to$ MQTT alert topic & Always active; weights adjust as higher tiers become available \\
+	\hline
+\end{longtable}

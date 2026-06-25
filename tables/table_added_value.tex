@@ -1,0 +1,14 @@
+\begin{tabular}{|p{3.5cm}|p{2.5cm}|p{8cm}|}
+	\hline
+	\rowcolor{primary}
+	\textbf{\color{white}Contribution} & \textbf{\color{white}Gaps Addressed} & \textbf{\color{white}Technical realisation in this thesis} \\
+	\hline
+	C1: First integrated 3D DT + multi-tier ML system for desktop FDM & L1, N1, O1 & Vite/React/Three.js dashboard renders a live synchronised 3D model; Python backend runs three-tier ML and pushes annotated fault alerts via WebSocket to the same scene \\
+	\hline
+	C2: First browser-native (zero-install) DT interface for any desktop AM machine & L4, N2, O2 & Three.js/WebGL replaces Unity 3D; operator opens a URL in any modern browser, no installation, no GPU, no licence \\
+	\hline
+	C3: Three-tier self-bootstrapping ML architecture solving the cold-start problem & L6, N3, O3 & Tier 0 (rules) operates from day one; its labelled events train Tier 1\&2 (SVM/RF) and Tier 3 (LSTM) progressively, no pre-existing fault dataset required \\
+	\hline
+	C4: First published legacy machine retrofit: no firmware modification & L3, L5, N4, O5 & External MPU-6050 + KY-013 + OctoPrint MQTT bridge; BCN3D+ Marlin firmware unmodified; full system reproducible \\
+	\hline
+\end{tabular}

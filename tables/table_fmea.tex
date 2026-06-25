@@ -1,0 +1,42 @@
+% ============================================================
+% TABLE: FMEA worksheet (longtable)
+% ============================================================
+{
+\scriptsize
+\rowcolors{2}{white}{primary!10}
+\begin{xltabular}{\linewidth}{| J | J | J | J | c | c | c | c | c |}
+	\caption{FMEA worksheet for BCN3D+ FDM printer}
+	\label{tab:fmea} \\
+	\hline
+	\rowcolor{primary}
+	\textbf{\color{white}Failure Mode} & \textbf{\color{white}Subsystem} & \textbf{\color{white}Failure Cause} & \textbf{\color{white}Failure Effect} & \textbf{\color{white}S} & \textbf{\color{white}O} & \textbf{\color{white}D} & \textbf{\color{white}RPN} & \textbf{\color{white}Priority} \\
+	\hline
+	\endfirsthead
+
+	\hline
+	\rowcolor{primary}
+	\textbf{\color{white}Failure Mode} & \textbf{\color{white}Subsystem} & \textbf{\color{white}Failure Cause} & \textbf{\color{white}Failure Effect} & \textbf{\color{white}S} & \textbf{\color{white}O} & \textbf{\color{white}D} & \textbf{\color{white}RPN} & \textbf{\color{white}Priority} \\
+	\hline
+	\endhead
+
+	\hline
+	\multicolumn{9}{r}{\textit{Continued on next page\ldots}} \\
+	\endfoot
+
+	\hline
+	\endlastfoot
+
+	Nozzle clogging & Extruder & Filament impurities, carbonised residue, heat creep & Under-extrusion, print cessation, material waste & 8 & 7 & 7 & 392 & CRITICAL \\
+	\hline
+	Overheating (thermal runaway) & Extruder / Bed & Heater cartridge failure, PID instability, fan failure & Component damage, fire risk, print failure & 9 & 4 & 5 & 180 & HIGH \\
+	\hline
+	Misalignment (layer shifting) & Motion system & Belt slippage, loose pulley, acceleration too high & Dimensional inaccuracy, failed print & 7 & 5 & 6 & 210 & HIGH \\
+	\hline
+	Bearing wear & Motion / Extruder & Lubrication loss, prolonged use, dust contamination & Vibration increase, positional error, seizure & 6 & 5 & 7 & 210 & HIGH \\
+	\hline
+	Step loss (missed steps) & Motion / Electronics & Driver overheating, current too low, mechanical obstruction & Layer offset, print failure, position error & 7 & 6 & 5 & 210 & HIGH \\
+	\hline
+	Belt breakage & Motion system & Fatigue, improper tensioning, foreign objects & Complete motion failure, immediate print loss & 8 & 3 & 7 & 168 & MEDIUM \\
+	\hline
+\end{xltabular}
+}

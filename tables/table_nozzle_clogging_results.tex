@@ -1,0 +1,39 @@
+\begin{longtable}{|L{3.5cm}|C{2.8cm}|C{2.8cm}|C{3.0cm}|}
+\caption{Extrusion anomaly detection results}
+\label{tab:nozzle_clogging_results} \\
+\hline
+\rowcolor{primary}
+\textbf{\color{white}Metric} &
+\textbf{\color{white}Global Model (All Features)} &
+\textbf{\color{white}Binary Detector (Physics-Aware)} &
+\textbf{\color{white}Improvement} \\
+\hline
+\endfirsthead
+
+\hline
+\rowcolor{primary}
+\textbf{\color{white}Metric} &
+\textbf{\color{white}Global Model (All Features)} &
+\textbf{\color{white}Binary Detector (Physics-Aware)} &
+\textbf{\color{white}Improvement} \\
+\hline
+\endhead
+
+\hline
+\multicolumn{4}{r}{\textit{Continued on next page\ldots}} \\
+\endfoot
+
+\hline
+\endlastfoot
+
+Precision & 1.0000 & 0.9447 & -- \\
+\hline
+Recall & 0.3634 & 0.6048 & \textbf{+24.14\%} \\
+\hline
+F1-Score & 0.5330 & 0.7375 & \textbf{+0.2045} \\
+\hline
+\multicolumn{4}{|l|}{\textit{Top feature (clog): \texttt{nozzle\_delta\_roll\_min} at 24.0\% importance}} \\
+\hline
+\multicolumn{4}{|l|}{\textit{Top feature (low\_flow): \texttt{e\_ratio} at 26.86\% importance}} \\
+\hline
+\end{longtable}
